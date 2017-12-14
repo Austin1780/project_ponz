@@ -3,8 +3,6 @@ const bcrypt = require("bcrypt");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
-const deepPopulate = require("mongoose-deep-populate")(mongoose);
-
 const UserSchema = new Schema(
   {
     fname: { type: String, required: true },
@@ -19,14 +17,43 @@ const UserSchema = new Schema(
       }
     ],
     ponzPoints: Number,
-    depth: { type: Number, default: 0 }
+    depth: { type: Number, default: 0 },
+    points: { type: Number, default: 0 },
+    levelCounts: [{ type: Number, default: 0 }]
   },
   {
     timestamps: true
   }
 );
 
-UserSchema.plugin(deepPopulate /* more on options below */);
+UserSchema.methods.addPoints = async function() {
+  let distance = 0;
+  let user = this;
+  while (user.parentId) {
+    let parent = await User.findById(user.parentId);
+    parent.points += determinePoints(distance);
+    parent.save();
+    distance++;
+    user = parent;
+  }
+};
+
+let determinePoints = distance => {
+  const points = [40, 20, 10, 5, 2];
+  if (distance < 5) return points[distance];
+  return 1;
+};
+
+UserSchema.methods.populateChildren = async function(depth = -1) {
+  let user = await User.findById(this._id).populate("childIds");
+  user.depth = depth;
+  user.childIds = await Promise.all(
+    user.childIds.map(child => {
+      return child.populateChildren(depth + 1);
+    })
+  );
+  return user;
+};
 
 UserSchema.virtual("displayName").get(function() {
   return this.fname + " " + this.lname;

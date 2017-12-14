@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const User = require("./models/user");
+//const addUser = require("./addUser");
 
 // ----------------------------------------
 // Passport
@@ -13,7 +14,7 @@ app.use(passport.initialize());
 // ----------------------------------------
 // App Variables
 // ----------------------------------------
-app.locals.appName = "Ponz Project";
+app.locals.appName = "The Ponz Project";
 
 // ----------------------------------------
 // Express Sessions
@@ -141,11 +142,9 @@ passport.deserializeUser(function(id, done) {
 app.get("/", async (req, res) => {
   try {
     if (req.session.passport && req.session.passport.user) {
-      let currentUser = await User.findById(
-        req.session.passport.user
-      ).deepPopulate(
-        "childIds.childIds.childIds.childIds.childIds.childIds.childIds.childIds"
-      );
+      let currentUser1 = await User.findById(req.session.passport.user);
+      //.deepPopulate("childIds.childIds.childIds.childIds.childIds.childIds.childIds.childIds");
+      currentUser = await currentUser1.populateChildren();
       res.render("welcome/index", {
         currentUser: currentUser
       });
@@ -175,24 +174,24 @@ app.post(
   })
 );
 
-app.post("/register/:referral", (req, res, next) => {
+app.post("/register/:referral", async (req, res) => {
   const { fname, lname, email, password } = req.body;
   const parentId = req.params.referral;
+  //await addUser(fname, lname, email, password, parentId);
   if (parentId === "0") {
     const user = new User({ fname, lname, email, password });
-    user.save(err => {
-      res.redirect("/login");
-    });
+    await user.save(err => {});
   } else {
     const user = new User({ fname, lname, email, password, parentId });
-    user.save(async err => {
+    await user.save(async err => {
+      await user.addPoints();
       await User.findByIdAndUpdate(parentId, {
-        $push: { childIds: user._id },
-        $inc: { depth: 1 }
+        $push: { childIds: user._id }
+        //$inc: { depth: 1 }
       });
-      res.redirect("/login");
     });
   }
+  res.redirect("/login");
 });
 
 app.get("/logout", function(req, res) {

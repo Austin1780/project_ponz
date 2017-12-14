@@ -1,3 +1,87 @@
+* {
+  font-family: "Ubuntu", sans-serif;
+}
+
 .tab {
   margin-left: 20px;
+}
+
+#nav-title {
+  padding: 20px;
+  color: black !important;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#moneyIcon {
+  height: 50px;
+  padding-top: 5px;
+}
+
+.glyphicon {
+  font-size: 30px;
+  color: #777;
+}
+
+.glyphicon:hover {
+  color: black;
+}
+
+.glyphicon-user {
+  padding: 0;
+}
+
+.coin {
+  height: 40px;
+  padding-right: 10px;
+}
+
+#pyramidPeople {
+  height: 250px;
+}
+
+h4 {
+  text-align: center;
+}
+
+.chair {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 350px;
+}
+
+.points-display {
+  background-color: #5cb85b;
+  height: 100px;
+  text-align: center;
+  margin-top: 70px;
+}
+
+#total-ponz {
+  font-weight: bold;
+}
+
+ul {
+  list-style: none;
+}
+
+.ref {
+  border: 2px #0375d8 solid;
+  border-radius: 15px;
+}
+
+.points-row {
+  height: 15px;
+}
+
+#pyramid-structure,
+.rectangle-level {
+  text-align: center;
+}
+
+.rectangle-level {
+  background-color: blue;
+  color: white;
+  margin: 10px 0 10px 0;
 }

@@ -1,18 +1,24 @@
-<h1>Welcome, {{currentUser.displayName}}! =D</h1>
+<h1>Welcome, {{currentUser.displayName}}!</h1>
 
+<div class="ref col-sm-10">
 <h3>Your referral link is: <a href='/register/{{currentUser._id}}'>http://www.ponz.io/register/{{currentUser._id}}</a></h3>
 
 <p>
   Share this link with your <strong>friends</strong> to <em>ponvert</em> them!
 </p>
+</div>
+<div class="points-row col-sm-12"></div>
 
-
-<div>
-  {{#if currentUser.ponzPoints.length }}
+<div class="container points-container">
+  <div class="col-sm-4">
+  <img src="/assets/images/pyramid.jpg" id="pyramidPeople">
+  </div>
+<div class="points-display col-sm-5">
+  {{#if currentUser.points }}
     <table class="table">
       <tbody>
           <tr>
-            <h3>Ponz Pointz {{currentUser.ponzPoints}}</h3>
+            <h3>Total Ponz Pointz: </h3><h3 id="total-ponz tag-blink">{{currentUser.points}}</h3>
           </tr>
       </tbody>
     </table>
@@ -20,18 +26,34 @@
     <p class="text-danger">You have no Ponz Points yet. You're poor.</p>
   {{/if }}
 </div>
+<div class="col-sm-4">
+</div>
+</div>
 
 <div>
   <h3>Your Ponzverts</h3>
 {{#if currentUser.childIds.length }}
-  <table class="table">
-    <tbody>
-      {{#each currentUser.childIds as |ponzvert| }}
-          {{>referral ponzvert=ponzvert}}
-      {{/each }}
-    </tbody>
-  </table>
+<ul>
+  {{#each currentUser.childIds as |ponzvert| }}
+    {{>referral ponzvert=ponzvert}}
+  {{/each }}
+</ul>
 {{else }}
   <p class="text-danger">You have no Ponzverts yet. Get Ponzverting now!</p>
 {{/if }}
+</div>
+
+<h3>Your Pyramid Progress:</h3>
+<div id="pyramid-structure col-sm-12">
+  <div class="rectangle-level">1</div>
+  {{#if currentUser.childIds.length }}
+    <div class="rectangle-level">
+      {{currentUser.childIds.length}}
+    </div>
+    {{#each currentUser.childIds as |ponzvert| }}
+    <div class="rectangle-level">
+      {{ponzvert.childIds.length}}
+    </div>
+    {{/each }}
+  {{/if }}
 </div>

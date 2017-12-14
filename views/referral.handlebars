@@ -1,10 +1,11 @@
-<tr>
-  <td>
-    40 points: <strong>{{ponzvert.displayName}} </strong> <em>ponzverted on {{ponzvert.createdAt}}</em>
-  </td>
-</tr>
+<li>
+    <img src="/assets/images/coin-icon.jpg" class="coin">{{pointLevel ponzvert.depth}} points: <strong>{{ponzvert.displayName}} </strong> <em>ponzverted on {{ponzvert.createdAt}}</em>
+</li>
 {{#if ponzvert.childIds.length }}
+<ul>
  {{#each ponzvert.childIds as |ponzvert|}}
+   <ul>
     {{>referral ponzvert=ponzvert}}
  {{/each}}
 {{/if}}
+</ul>
