@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
+// -----------------------------
+// User Model
+// -----------------------------
 const UserSchema = new Schema(
   {
     fname: { type: String, required: true },
@@ -16,7 +19,6 @@ const UserSchema = new Schema(
         ref: "User"
       }
     ],
-    ponzPoints: Number,
     depth: { type: Number, default: 0 },
     points: { type: Number, default: 0 },
     levelCounts: [{ type: Number, default: 0 }]
@@ -26,24 +28,34 @@ const UserSchema = new Schema(
   }
 );
 
+// -----------------------------
+// adds points each time a user is added
+// -----------------------------
 UserSchema.methods.addPoints = async function() {
   let distance = 0;
   let user = this;
   while (user.parentId) {
     let parent = await User.findById(user.parentId);
     parent.points += determinePoints(distance);
+    parent.levelCounts[distance]++;
     parent.save();
     distance++;
     user = parent;
   }
 };
 
+// -----------------------------
+// determines point value based on distance
+// -----------------------------
 let determinePoints = distance => {
   const points = [40, 20, 10, 5, 2];
   if (distance < 5) return points[distance];
   return 1;
 };
 
+// -----------------------------
+// populates all nested children
+// -----------------------------
 UserSchema.methods.populateChildren = async function(depth = -1) {
   let user = await User.findById(this._id).populate("childIds");
   user.depth = depth;
@@ -55,9 +67,17 @@ UserSchema.methods.populateChildren = async function(depth = -1) {
   return user;
 };
 
+// -----------------------------
+// displayName virtual
+// -----------------------------
+
 UserSchema.virtual("displayName").get(function() {
   return this.fname + " " + this.lname;
 });
+
+// -----------------------------
+// Passport, password validation
+// -----------------------------
 
 UserSchema.plugin(uniqueValidator);
 

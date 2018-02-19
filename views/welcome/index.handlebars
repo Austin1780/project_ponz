@@ -1,6 +1,6 @@
 <h1>Welcome, {{currentUser.displayName}}!</h1>
 
-<div class="ref col-sm-10">
+<div class="ref col-sm-12">
 <h3>Your referral link is: <a href='/register/{{currentUser._id}}'>http://www.ponz.io/register/{{currentUser._id}}</a></h3>
 
 <p>
@@ -10,10 +10,10 @@
 <div class="points-row col-sm-12"></div>
 
 <div class="container points-container">
-  <div class="col-sm-4">
+  <div class="col-sm-6">
   <img src="/assets/images/pyramid.jpg" id="pyramidPeople">
   </div>
-<div class="points-display col-sm-5">
+<div class="points-display col-sm-5 col-offset-1">
   {{#if currentUser.points }}
     <table class="table">
       <tbody>
@@ -25,8 +25,6 @@
   {{else }}
     <p class="text-danger">You have no Ponz Points yet. You're poor.</p>
   {{/if }}
-</div>
-<div class="col-sm-4">
 </div>
 </div>
 
@@ -51,9 +49,13 @@
       {{currentUser.childIds.length}}
     </div>
     {{#each currentUser.childIds as |ponzvert| }}
-    <div class="rectangle-level">
-      {{ponzvert.childIds.length}}
-    </div>
+      {{>rectangles ponzvert=ponzvert}}
     {{/each }}
   {{/if }}
+  <div class="triangle" id="left-triangle">
+
+  </div>
+  <div class="triangle" id="right-triangle">
+
+  </div>
 </div>

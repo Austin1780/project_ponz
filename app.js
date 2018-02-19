@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const User = require("./models/user");
-//const addUser = require("./addUser");
+const addUser = require("./addUser");
 
 // ----------------------------------------
 // Passport
@@ -115,8 +115,8 @@ app.use(morganToolkit());
 // ----------------------------------------
 
 passport.use(
-  new LocalStrategy(function(email, password, done) {
-    User.findOne({ email }, function(err, user) {
+  new LocalStrategy((email, password, done) => {
+    User.findOne({ email }, (err, user) => {
       if (err) return done(err);
       if (!user || !user.validPassword(password)) {
         return done(null, false, { message: "Invalid email/password" });
@@ -126,12 +126,12 @@ passport.use(
   })
 );
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
     done(err, user);
   });
 });
@@ -142,9 +142,8 @@ passport.deserializeUser(function(id, done) {
 app.get("/", async (req, res) => {
   try {
     if (req.session.passport && req.session.passport.user) {
-      let currentUser1 = await User.findById(req.session.passport.user);
-      //.deepPopulate("childIds.childIds.childIds.childIds.childIds.childIds.childIds.childIds");
-      currentUser = await currentUser1.populateChildren();
+      let currentUser = await User.findById(req.session.passport.user);
+      currentUser = await currentUser.populateChildren();
       res.render("welcome/index", {
         currentUser: currentUser
       });
@@ -177,24 +176,11 @@ app.post(
 app.post("/register/:referral", async (req, res) => {
   const { fname, lname, email, password } = req.body;
   const parentId = req.params.referral;
-  //await addUser(fname, lname, email, password, parentId);
-  if (parentId === "0") {
-    const user = new User({ fname, lname, email, password });
-    await user.save(err => {});
-  } else {
-    const user = new User({ fname, lname, email, password, parentId });
-    await user.save(async err => {
-      await user.addPoints();
-      await User.findByIdAndUpdate(parentId, {
-        $push: { childIds: user._id }
-        //$inc: { depth: 1 }
-      });
-    });
-  }
+  await addUser(fname, lname, email, password, parentId);
   res.redirect("/login");
 });
 
-app.get("/logout", function(req, res) {
+app.get("/logout", (req, res) => {
   req.logout();
   res.redirect("login");
 });

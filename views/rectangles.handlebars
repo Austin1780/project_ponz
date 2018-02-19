@@ -1,0 +1,8 @@
+<div class="rectangle-level">
+  {{ponzvert.childIds.length}}
+</div>
+{{#if ponzvert.childIds.length }}
+  {{#each currentUser.childIds as |ponzvert| }}
+    {{>rectangles ponzvert=ponzvert}}
+  {{/each }}
+{{/if}}

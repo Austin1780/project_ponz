@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <img src="/assets/images/money.png" id="moneyIcon" height="50">
+      <img src="/assets/images/money.png" id="moneyIcon">
       <a class="navbar-brand" id="nav-title" href="{{ rootPath }}">{{ appName }}</a>
     </div>
 
@@ -28,7 +28,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a href="">Settings</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="{{ rootPath }}/logout">Logout</a></li>
           </ul>
         </li>
         {{/if}}
