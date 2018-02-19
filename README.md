@@ -8,6 +8,7 @@ This app replicates a ponzi scheme where users can sign up, log in to their acco
 
 ## Built With:
 
+* JavaScript
 * [React](https://reactjs.org/) - Frontend framework
 * [Redux](https://redux.js.org/) - Predictable State Container for React
 * [npm](https://www.npmjs.com/) - Dependency Management
